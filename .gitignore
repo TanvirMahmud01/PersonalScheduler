@@ -1,0 +1,4 @@
+.venv
+.mint-venv
+__pycache__
+build/
