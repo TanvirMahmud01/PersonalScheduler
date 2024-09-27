@@ -1,1 +1,1 @@
-# ToDoApp
+# Personal Scheduler App
