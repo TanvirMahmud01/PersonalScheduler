@@ -9,4 +9,4 @@ source $VENV_PATH/bin/activate
 # Navigate to project directory
 cd /home/tm/Documents/personal_projects/PersonalScheduler/backend
 
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8249
