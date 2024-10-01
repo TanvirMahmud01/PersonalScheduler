@@ -100,3 +100,7 @@ def create_item(user_id: int, subject: str = Form(...), task: str = Form(...), d
     except Exception as e:
         print(e)
         return {"message": "An error occurred"}
+
+
+if __name__ == '__main__':
+    uvicorn.run("main:app")
