@@ -1,13 +1,14 @@
-from fastapi import Depends, FastAPI, HTTPException, Request, Form
+from fastapi import Depends, File, UploadFile, FastAPI, HTTPException, Request, Form
 from sqlalchemy.orm import Session
 from datetime import datetime, date, time
-import crud
-import models
-import schemas
+import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import RedirectResponse
+import shutil, os
+from PIL import Image
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -16,7 +17,12 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates("templates")
 
-# Dependency
+
+# Allowed image formats
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def get_db():
@@ -32,6 +38,37 @@ def read_items(request: Request, skip: int = 0, limit: int = 100, db: Session = 
     items = crud.get_items(db, skip=skip, limit=limit)
     return templates.TemplateResponse(name="tasks.html", context={"request": request, "tasks": items})
 
+@app.get("/time-table")
+def show_timetable(request: Request):
+    timetable_exists = os.path.exists(os.path.join("static", "timetable.png"))
+
+    return templates.TemplateResponse(name="schedule.html", context={"request": request, "imgs": timetable_exists})
+
+@app.post("/upload")
+async def upload_image(file: UploadFile = File(...)):
+    # Ensure the uploaded file is an image
+    if not allowed_file(file.filename):
+        raise HTTPException(status_code=400, detail="Invalid file type. Only images are allowed.")
+
+    # Fixed file name for uploaded image
+    file_extension = file.filename.rsplit('.', 1)[1].lower()
+    save_filename = f"timetable.{file_extension}"  # Always save as timetable.png or timetable.jpg, etc.
+    save_path = os.path.join("static", save_filename)
+
+    # Save the file to the static directory
+    with open(save_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Verify the image using Pillow (PIL)
+    try:
+        img = Image.open(save_path)
+        img.verify()  # Will raise an exception if the file is not a valid image
+        img.close()   # Close the image to release file resources
+    except Exception as e:
+        os.remove(save_path)  # Remove the invalid image
+        raise HTTPException(status_code=400, detail=f"Uploaded file is not a valid image: {e}")
+
+    return RedirectResponse(url="/time-table", status_code=303)  
 
 @app.post("/delete/{item_id}")
 def delete_item(request: Request, item_id: int, db: Session = Depends(get_db)):
@@ -66,13 +103,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
-
-
-# @app.post("/users/{user_id}/items/", response_model=schemas.Task)
-# def create_item_for_user(
-#     user_id: int, item: schemas.TaskCreate, db: Session = Depends(get_db)
-# ):
-#     return crud.create_user_item(db=db, item=item, user_id=user_id)
 
 
 @app.post("/users/{user_id}/items/")
