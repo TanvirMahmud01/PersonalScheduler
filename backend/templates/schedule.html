@@ -1,0 +1,30 @@
+{% include './shared/header.html' without context %}
+<body>
+  {% include './shared/navbar.html' without context %}
+  <div class="alert alert-success mt-3" role="alert">
+    <h3 class="text-center">Your Class Schedule</h1>
+  </div>
+  <div class="container">
+    <div class="text-center">
+        <p>Upload your current timetable image</p>
+        <form action="/upload" enctype="multipart/form-data" method="post">
+            <div class="mb-3">
+                <input type="file" name="file" accept="image/*" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <br>
+        
+        <div >
+            {% if imgs %}
+                <h4>Your Timetable</h4>
+                <img src="{{ url_for('static', path='timetable.png') }}" class="img-fluid" alt="Timetable" style="max-width: 100%; height: auto;">
+            {% else %}
+                <p>No timetable image available.</p>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+
+  {% include './shared/footer.html' without context %}
+</body>
