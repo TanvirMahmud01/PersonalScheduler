@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Install Python if not available globally
-        python 'Python 3.12'
-    }
-
     environment {
         SONARQUBE_SERVER = 'SonarQube Server'
         PIPENV_VENV_IN_PROJECT = "true" // Ensures virtualenv compatibility
