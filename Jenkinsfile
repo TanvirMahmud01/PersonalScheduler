@@ -30,15 +30,17 @@ pipeline {
             steps {
                 echo 'Running SonarQube analysis...'
                 withSonarQubeEnv('SonarQube Server') {
-                    def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    bat """
-                    "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                    -Dsonar.projectKey=personal-scheduler ^
-                    -Dsonar.sources=backend ^
-                    -Dsonar.host.url=${SONAR_HOST_URL} ^
-                    -Dsonar.login=${SONAR_LOGIN} ^
-                    -Dsonar.sourceEncoding=UTF-8
-                    """
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        bat """
+                        ${scannerHome}\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=personal-scheduler ^
+                        -Dsonar.sources=backend ^
+                        -Dsonar.host.url=${SONAR_HOST_URL} ^
+                        -Dsonar.login=${SONAR_LOGIN} ^
+                        -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
                 }
             }
         }
