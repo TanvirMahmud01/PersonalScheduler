@@ -1,4 +1,5 @@
 # Personal Scheduler App
+
 Steps to create a virtual environment and install the neccessary packages.
 
 1. run "python -m venv .venv" in terminal window of the backend folder
@@ -8,3 +9,5 @@ Steps to create a virtual environment and install the neccessary packages.
 
 Steps to run the app:
 Run "uvicorn main:app --reload" in the terminal window of the backend folder
+
+//Test comments
