@@ -11,4 +11,4 @@ Steps to run the app:
 Run "uvicorn main:app --reload" in the terminal window of the backend folder
 
 //Test comment
-//2
+//2 test
