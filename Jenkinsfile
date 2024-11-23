@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_SCANNER_HOME = 'C:\Software\sonar-scanner-cli-6.2.1.4610-windows-x64\sonar-scanner-6.2.1.4610-windows-x64\bin' 
+        SONAR_SCANNER_HOME = 'C:\Software\sonar-scanner-cli-6.2.1.4610-windows-x64\sonar-scanner-6.2.1.4610-windows-x64\bin' // Path to SonarQube Scanner
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_LOGIN = 'sqa_954c423859ee3d4618b2447072b15f3ed74953da'
     }
