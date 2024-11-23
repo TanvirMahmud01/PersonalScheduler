@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube Server'
-        PIPENV_VENV_IN_PROJECT = "true" // Ensures virtualenv compatibility
+        SONAR_SCANNER_HOME = '/path/to/sonar-scanner' // Update with your actual Sonar Scanner path
+        SONAR_HOST_URL = 'http://localhost:9000'
+        SONAR_LOGIN = 'sqa_954c423859ee3d4618b2447072b15f3ed74953da'
     }
 
     stages {
@@ -13,6 +14,7 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Setup Environment') {
             steps {
                 echo 'Setting up Python environment...'
@@ -24,71 +26,21 @@ pipeline {
                 '''
             }
         }
-        stage('Static Code Analysis') {
+
+        stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
                 withSonarQubeEnv('SonarQube Server') {
                     bat '''
-                    .venv\\Scripts\\activate
-                    sonar-scanner.bat
+                    ${SONAR_SCANNER_HOME}/bin/sonar-scanner.bat \
+                    -Dsonar.projectKey=personal-scheduler \
+                    -Dsonar.sources=backend \
+                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                    -Dsonar.login=${SONAR_LOGIN} \
+                    -Dsonar.sourceEncoding=UTF-8
                     '''
                 }
             }
-        }
-        stage('Unit Test') {
-            steps {
-                echo 'Running unit tests...'
-                bat '''
-                .venv\\Scripts\\activate
-                pytest --cov=backend > test-results.log
-                '''
-                publishHTML(target: [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'test-results.log',
-                    reportName: "Test Results"
-                ])
-            }
-        }
-        stage('Package') {
-            steps {
-                echo 'Packaging application...'
-                bat '''
-                tar -cvf scheduler.tar backend/
-                '''
-            }
-        }
-        stage('Deploy to Dev') {
-            steps {
-                echo 'Deploying to Dev Environment...'
-                bat 'echo Deployment to Dev Mocked'
-            }
-        }
-        stage('Deploy to Staging') {
-            steps {
-                echo 'Deploying to Staging Environment...'
-                bat 'echo Deployment to Staging Mocked'
-            }
-        }
-        stage('Deploy to Production') {
-            steps {
-                echo 'Deploying to Production Environment...'
-                bat 'echo Deployment to Production Mocked'
-            }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: '**/*.tar', allowEmptyArchive: true
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
