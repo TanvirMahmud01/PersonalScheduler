@@ -26,6 +26,16 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                echo 'Validating application setup...'
+                bat '''
+                .venv\\Scripts\\activate
+                echo "Application ready to build/run."
+                '''
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
@@ -44,8 +54,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests and generating code coverage report...'
+                bat '''
+                .venv\\Scripts\\activate
+                pytest --cov=backend tests/
+                '''
+            }
+        }
     }
 }
-
-
-//test comments
