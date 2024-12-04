@@ -36,6 +36,26 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                echo 'Running tests and generating code coverage report...'
+                bat '''
+                .venv\\Scripts\\activate
+                pytest --cov=backend --cov-report=xml --junitxml=results.xml
+                '''
+            }
+        }
+
+        stage('Prepare Coverage Report') {
+            steps {
+                echo 'Preparing coverage report...'
+                bat '''
+                mkdir backend\\reports
+                move coverage.xml backend\\reports\\
+                '''
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
@@ -55,16 +75,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests and generating code coverage report...'
-                bat '''
-                .venv\\Scripts\\activate
-                pytest --cov=backend --cov-report=term --junitxml=results.xml
-                dir
-                '''
-            }
-        }
 
         stage('Publish Test Results') {
             steps {
