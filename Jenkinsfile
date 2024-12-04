@@ -98,11 +98,7 @@ pipeline {
                 echo 'Deploying to Dev environment...'
                 bat '''
                 .venv\\Scripts\\activate
-                echo "Starting uvicorn server..."
-                start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload
-                echo "Server is running... waiting a few seconds to ensure it starts..."
-                timeout /t 10 /nobreak
-                echo "Server started successfully."
+                call backend\\scripts\\start_uvicorn.bat
                 '''
                 }
         }
