@@ -56,6 +56,15 @@ pipeline {
             }
         }
 
+        stage('Publish Test Results') {
+            steps {
+                echo 'Publishing JUnit test results...'
+                junit '**/backend/results.xml'
+                bat 'dir /s'
+               
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
@@ -76,13 +85,7 @@ pipeline {
         }
 
 
-        stage('Publish Test Results') {
-            steps {
-                echo 'Publishing JUnit test results...'
-                junit '**/backend/results.xml'
-               
-            }
-        }
+        
 
         stage('Deliver') {
             steps {
