@@ -41,10 +41,15 @@ pipeline {
                 echo 'Running tests and generating code coverage report...'
                 bat '''
                 .venv\\Scripts\\activate
-                pytest --cov=backend --cov-report=xml --junitxml=results.xml
+                pytest --cov=backend --cov-report=xml --junitxml=backend/results.xml
                 '''
             }
         }
+        post {
+        always {
+            junit '**/backend/results.xml'
+        }
+    }
 
         stage('Prepare Coverage Report') {
             steps {
