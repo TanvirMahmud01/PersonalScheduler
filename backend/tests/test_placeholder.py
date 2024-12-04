@@ -1,5 +1,4 @@
-def add(a, b):
-    return a + b
+from backend.add import add
 
 
 def test_add():
