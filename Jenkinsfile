@@ -45,12 +45,7 @@ pipeline {
                 '''
             }
         }
-        post {
-        always {
-            junit '**/backend/results.xml'
-        }
-    }
-
+        
         stage('Prepare Coverage Report') {
             steps {
                 echo 'Preparing coverage report...'
@@ -140,6 +135,12 @@ pipeline {
                 echo "Mocking deployment to Production environment."
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            junit '**/backend/results.xml'
         }
     }
 }
