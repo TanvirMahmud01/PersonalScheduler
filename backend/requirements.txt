@@ -23,3 +23,5 @@ starlette==0.38.6
 typing_extensions==4.12.2
 uvicorn==0.30.6
 pytest
+pytest-cov
+coverage
