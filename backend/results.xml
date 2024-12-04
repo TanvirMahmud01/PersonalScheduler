@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.047" timestamp="2024-12-03T18:04:41.640428-07:00" hostname="TM-Zen4"><testcase classname="tests.test_placeholder" name="test_placeholder" time="0.001" /></testsuite></testsuites>
