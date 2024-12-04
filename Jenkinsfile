@@ -60,8 +60,16 @@ pipeline {
                 echo 'Running tests and generating code coverage report...'
                 bat '''
                 .venv\\Scripts\\activate
-                pytest --cov=backend tests/
+                pytest --cov=backend --cov-report=xml --junitxml=results.xml
                 '''
+            }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                echo 'Publishing JUnit test results...'
+                junit '**/results.xml'
+                cobertura coberturaReportFile: '**/coverage.xml'
             }
         }
 
