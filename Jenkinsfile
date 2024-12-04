@@ -64,5 +64,55 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deliver') {
+            steps {
+                echo 'Delivering build artifact...'
+                bat '''
+                .venv\\Scripts\\activate
+                echo "Mocking artifact delivery (e.g., creating a .zip or .tar.gz file)."
+                '''
+            }
+        }
+
+        stage('Deploy to Dev Env') {
+            steps {
+                echo 'Deploying to Dev environment...'
+                bat '''
+                .venv\\Scripts\\activate
+                uvicorn main:app --host 127.0.0.1 --port 8000 --reload &
+                timeout /T 5 >nul
+                taskkill /IM "python.exe" /F
+                echo "Mocked Dev environment deployment completed."
+                '''
+            }
+        }
+
+        stage('Deploy to QAT Env') {
+            steps {
+                echo 'Deploying to QAT environment...'
+                bat '''
+                echo "Mocking deployment to QAT environment."
+                '''
+            }
+        }
+
+        stage('Deploy to Staging Env') {
+            steps {
+                echo 'Deploying to Staging environment...'
+                bat '''
+                echo "Mocking deployment to Staging environment."
+                '''
+            }
+        }
+
+        stage('Deploy to Production Env') {
+            steps {
+                echo 'Deploying to Production environment...'
+                bat '''
+                echo "Mocking deployment to Production environment."
+                '''
+            }
+        }
     }
 }
