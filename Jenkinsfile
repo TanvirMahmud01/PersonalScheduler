@@ -41,11 +41,11 @@ pipeline {
                 echo 'Running tests and generating code coverage report...'
                 bat '''
                 .venv\\Scripts\\activate
-                pytest --cov=backend --cov-report=xml --junitxml=backend/results.xml
+                pytest --cov=backend --cov-report=xml --cov-report=term --junitxml=backend/results.xml
                 '''
             }
         }
-        
+
         stage('Prepare Coverage Report') {
             steps {
                 echo 'Preparing coverage report...'
@@ -60,8 +60,6 @@ pipeline {
             steps {
                 echo 'Publishing JUnit test results...'
                 junit '**/backend/results.xml'
-                bat 'dir /s'
-               
             }
         }
 
@@ -77,15 +75,13 @@ pipeline {
                         -Dsonar.sources=backend ^
                         -Dsonar.host.url=${SONAR_HOST_URL} ^
                         -Dsonar.login=${SONAR_LOGIN} ^
+                        -Dsonar.python.coverage.reportPaths=backend/reports/coverage.xml ^
                         -Dsonar.sourceEncoding=UTF-8
                         """
                     }
                 }
             }
         }
-
-
-        
 
         stage('Deliver') {
             steps {
@@ -140,6 +136,7 @@ pipeline {
 
     post {
         always {
+            echo 'Pipeline execution complete. Publishing final results...'
             junit '**/backend/results.xml'
         }
     }
