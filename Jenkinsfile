@@ -60,7 +60,7 @@ pipeline {
                 echo 'Running tests and generating code coverage report...'
                 bat '''
                 .venv\\Scripts\\activate
-                pytest --cov=backend --cov-report=xml:coverage/coverage.xml --junitxml=results.xml
+                pytest --cov=backend --cov-report=term --junitxml=results.xml
                 dir
                 '''
             }
@@ -69,8 +69,8 @@ pipeline {
         stage('Publish Test Results') {
             steps {
                 echo 'Publishing JUnit test results...'
-                junit '**/results.xml'
-                cobertura coberturaReportFile: '**/coverage/coverage.xml'
+                junit '**/backend/results.xml'
+               
             }
         }
 
@@ -79,7 +79,7 @@ pipeline {
                 echo 'Delivering build artifact...'
                 bat '''
                 .venv\\Scripts\\activate
-                echo "Mocking artifact delivery (e.g., creating a .zip or .tar.gz file)."
+                echo "Mocking artifact delivery..."
                 '''
             }
         }
