@@ -98,10 +98,9 @@ pipeline {
                 echo 'Deploying to Dev environment...'
                 bat '''
                 .venv\\Scripts\\activate
-                uvicorn main:app --host 127.0.0.1 --port 8000 --reload &
-                timeout /T 5 >nul
-                taskkill /IM "python.exe" /F
-                echo "Mocked Dev environment deployment completed."
+                echo "Starting uvicorn server..."
+                start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+                echo "Server is running..."
                 '''
             }
         }

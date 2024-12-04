@@ -1,4 +1,8 @@
-from backend.add import add
+def add(a, b):
+    """
+    Adds two numbers and returns the result.
+    """
+    return a + b
 
 
 def test_add():
