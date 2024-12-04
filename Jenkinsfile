@@ -61,6 +61,7 @@ pipeline {
                 bat '''
                 .venv\\Scripts\\activate
                 pytest --cov=backend --cov-report=xml --junitxml=results.xml
+                dir
                 '''
             }
         }
