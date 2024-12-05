@@ -117,7 +117,7 @@ pipeline {
                 where python
                 pip list
                 echo "Starting uvicorn server..."
-                uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
+                start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
                 type uvicorn.log
                 '''
                 }
