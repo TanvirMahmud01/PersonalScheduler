@@ -24,7 +24,7 @@ pipeline {
                 python -m venv .venv
                 call .venv\\Scripts\\activate
                 pip install --upgrade pip
-                pip install -r backend\\requirements.txt
+                pip install -r requirements.txt
                 echo 'Finished setting up Python environment...'
                 '''
             }
