@@ -18,9 +18,10 @@ pipeline {
             steps {
                 echo 'Setting up Python environment...'
                 bat '''
+                mkdir backend
                 cd backend
                 python -m venv .venv
-                .venv\\Scripts\\activate
+                call .venv\\Scripts\\activate
                 pip install --upgrade pip
                 pip install -r backend/requirements.txt
                 echo 'Finished setting up Python environment...'
@@ -33,7 +34,7 @@ pipeline {
                 echo 'Validating application setup...'
                 bat '''
                 cd backend
-                .venv\\Scripts\\activate
+                call .venv\\Scripts\\activate
                 echo "Application ready to build/run."
                 '''
             }
@@ -44,7 +45,7 @@ pipeline {
                 echo 'Running tests and generating code coverage report...'
                 bat '''
                 cd backend
-                .venv\\Scripts\\activate
+                call .venv\\Scripts\\activate
                 pytest --cov=backend --cov-report=xml --cov-report=term --junitxml=backend/results.xml
                 '''
             }
@@ -87,13 +88,20 @@ pipeline {
             }
         }
 
+      
+
         stage('Deliver') {
             steps {
-                echo 'Delivering build artifact...'
-                bat '''
-                .venv\\Scripts\\activate
-                echo "Mocking artifact delivery..."
-                '''
+                  echo 'Packaging and delivering artifact...'
+                   bat '''
+                   @echo on
+                   mkdir artifact
+                   copy backend\\main.py artifact\\
+                   xcopy backend\\* artifact\\ /E /H /C /I
+                   cd artifact
+                   powershell Compress-Archive -Path * -DestinationPath ../artifact.zip
+                   echo "Mocking delivery of artifact.zip to repository..."
+                   '''
             }
         }
 
@@ -101,8 +109,12 @@ pipeline {
             steps {
                 echo 'Deploying to Dev environment...'
                 bat '''
+                @echo on
                 cd backend
-                .venv\\Scripts\\activate
+                call .venv\\Scripts\\activate
+                python --version
+                where python
+                pip list
                 echo "Starting uvicorn server..."
                 start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
                 timeout /t 10 /nobreak
