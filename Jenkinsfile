@@ -47,7 +47,7 @@ pipeline {
                 bat '''
                 cd backend
                 call .venv\\Scripts\\activate
-                pytest --cov=backend --cov-report=xml --cov-report=term --junitxml=backend/results.xml
+                pytest --cov --cov-report=xml --cov-report=term --junitxml=results.xml
                 '''
             }
         }
@@ -117,8 +117,7 @@ pipeline {
                 where python
                 pip list
                 echo "Starting uvicorn server..."
-                start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
-                timeout /t 10 /nobreak
+                uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
                 type uvicorn.log
                 '''
                 }
