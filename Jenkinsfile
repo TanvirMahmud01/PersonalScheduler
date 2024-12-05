@@ -100,7 +100,7 @@ pipeline {
                    copy backend\\main.py artifact\\
                    xcopy backend\\* artifact\\ /E /H /C /I
                    cd artifact
-                   powershell Compress-Archive -Path * -DestinationPath ..\\artifact.zip
+                   powershell Compress-Archive -Path * -DestinationPath ..\\artifact.zip -Force
                    echo "Delivery of artifact.zip to repository..."
                    '''
             }
