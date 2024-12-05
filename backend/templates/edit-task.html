@@ -1,0 +1,38 @@
+{% include './shared/header.html' without context %}
+<body>
+  {% include './shared/navbar.html' without context %}
+  <div class="container mt-3">
+    <h3>Edit Task</h3>
+    <form method="post" action="/edit/{{ task.id }}">
+      <div class="mb-3">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" value="{{ task.subject }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required>{{ task.description }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-control" id="status" name="status">
+          <option value="pending" {% if task.status == "pending" %}selected{% endif %}>Pending</option>
+          <option value="completed" {% if task.status == "completed" %}selected{% endif %}>Completed</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" name="date" value="{{ task.date }}">
+      </div>
+      <div class="mb-3">
+        <label for="time" class="form-label">Time</label>
+        <input type="time" class="form-control" id="time" name="time" value="{{ task.time }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Update Task</button>
+    </form>
+  </div>
+  {% include './shared/footer.html' without context %}
+</body>
