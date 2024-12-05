@@ -11,6 +11,7 @@ pipeline {
             steps {
                 echo 'Checking out code...'
                 checkout scm
+                bat 'dir backend'
             }
         }
 
@@ -23,7 +24,7 @@ pipeline {
                 python -m venv .venv
                 call .venv\\Scripts\\activate
                 pip install --upgrade pip
-                pip install -r backend/requirements.txt
+                pip install -r backend\\requirements.txt
                 echo 'Finished setting up Python environment...'
                 '''
             }
@@ -99,8 +100,8 @@ pipeline {
                    copy backend\\main.py artifact\\
                    xcopy backend\\* artifact\\ /E /H /C /I
                    cd artifact
-                   powershell Compress-Archive -Path * -DestinationPath ../artifact.zip
-                   echo "Mocking delivery of artifact.zip to repository..."
+                   powershell Compress-Archive -Path * -DestinationPath ..\\artifact.zip
+                   echo "Delivery of artifact.zip to repository..."
                    '''
             }
         }
@@ -154,7 +155,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline execution complete. Publishing final results...'
-            junit '**/backend/results.xml'
+            junit '**\\backend\\results.xml'
         }
     }
 }
