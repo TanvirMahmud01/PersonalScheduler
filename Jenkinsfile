@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_LOGIN = 'sqa_954c423859ee3d4618b2447072b15f3ed74953da'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-password' // Add this in Jenkins credentials
+        DOCKER_CREDENTIALS_ID = 'docker-hub-password' 
         DOCKER_IMAGE = 'tmt01/fastapi-app'
     }
 
