@@ -106,12 +106,16 @@ pipeline {
 
         stage('Deploy to Dev Env') {
             steps {
-                      echo 'Deploying to Dev environment...'
-                bat '''
-                docker run -d -p 8000:8000 --name fastapi-dev ${env.DOCKER_IMAGE}:dev
-                '''
+                echo 'Deploying to Dev environment...'
+                script {
+                    def resolvedImage = "${DOCKER_IMAGE}:dev"
+                    bat """
+                    docker run -d -p 8000:8000 --name fastapi-dev ${resolvedImage}
+                    """
                 }
+            }
         }
+
 
         stage('Deploy to QAT Env') {
             steps {
