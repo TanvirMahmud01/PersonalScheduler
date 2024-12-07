@@ -4,6 +4,8 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_LOGIN = 'sqa_954c423859ee3d4618b2447072b15f3ed74953da'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-password' 
+        DOCKER_IMAGE = 'tmt01/fastapi-app'
     }
 
     stages {
@@ -11,7 +13,6 @@ pipeline {
             steps {
                 echo 'Checking out code...'
                 checkout scm
-                bat 'dir backend'
             }
         }
 
@@ -93,33 +94,21 @@ pipeline {
 
         stage('Deliver') {
             steps {
-                  echo 'Packaging and delivering artifact...'
-                   bat '''
-                   @echo on
-                   mkdir artifact
-                   copy backend\\main.py artifact\\
-                   xcopy backend\\* artifact\\ /E /H /C /I
-                   cd artifact
-                   powershell Compress-Archive -Path * -DestinationPath ..\\artifact.zip -Force
-                   echo "Delivery of artifact.zip to repository..."
-                   '''
+            echo 'Building and pushing Docker image...'
+            script {
+                docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                    def app = docker.build("${DOCKER_IMAGE}:dev")
+                    app.push()
+                }
             }
+        }
         }
 
         stage('Deploy to Dev Env') {
             steps {
-                echo 'Deploying to Dev environment...'
+                      echo 'Deploying to Dev environment...'
                 bat '''
-                @echo on
-                cd backend
-                call .venv\\Scripts\\activate
-                python --version
-                where python
-                pip list
-                echo "Starting uvicorn server..."
-                start /B uvicorn main:app --host 127.0.0.1 --port 8000 --reload > uvicorn.log 2>&1
-                timeout /t 10
-                type uvicorn.log
+                docker run -d -p 8000:8000 --name fastapi-dev ${DOCKER_IMAGE}:dev
                 '''
                 }
         }
