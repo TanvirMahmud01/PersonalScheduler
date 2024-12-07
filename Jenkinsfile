@@ -108,7 +108,7 @@ pipeline {
             steps {
                       echo 'Deploying to Dev environment...'
                 bat '''
-                docker run -d -p 8000:8000 --name fastapi-dev ${DOCKER_IMAGE}:dev
+                docker run -d -p 8000:8000 --name fastapi-dev ${env.DOCKER_IMAGE}:dev
                 '''
                 }
         }
